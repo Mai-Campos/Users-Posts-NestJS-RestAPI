@@ -5,10 +5,10 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
-import { UserRepository } from './user.repository';
-import { User } from './user.model';
-import { UpdateUserDto } from './update-user.dto';
-import { CreateUserDTO } from './create-user.dto';
+import { UserRepository } from '../repositories/user.repository';
+import { User } from '../model/user.model';
+import { UpdateUserDto } from '../dtos/update-user.dto';
+import { CreateUserDTO } from '../dtos/create-user.dto';
 
 @Injectable()
 export class UserService {
