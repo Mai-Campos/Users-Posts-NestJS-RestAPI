@@ -5,7 +5,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Pool } from 'pg';
+import { Pool, QueryResult, QueryResultRow } from 'pg';
 
 @Injectable()
 export class DatabaseService implements OnModuleInit, OnModuleDestroy {
@@ -29,8 +29,21 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     this.logger.log('PostgreSQL connected');
   }
 
+  async query<T extends QueryResultRow>(
+    sql: string,
+    params?: any[],
+  ): Promise<QueryResult<T>> {
+    if (!this.pool) throw new Error('Database pool not initialized');
+
+    return this.pool.query<T>(sql, params);
+  }
+
   async onModuleDestroy() {
     await this.pool.end();
     this.logger.log('PostgreSQL disconnected');
+  }
+
+  getPool(): Pool {
+    return this.pool;
   }
 }
