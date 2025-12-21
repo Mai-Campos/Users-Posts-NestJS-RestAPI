@@ -18,7 +18,7 @@ export class UserRepository {
 
   async findById(id: number): Promise<User | null> {
     const result = await this.databaseService.query<User>(
-      'SELECT * from users WHERE id = $1',
+      'SELECT * FROM users WHERE id = $1',
       [id],
     );
 

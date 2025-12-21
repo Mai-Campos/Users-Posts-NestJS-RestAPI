@@ -9,6 +9,8 @@ async function bootstrap() {
     new ValidationPipe({
       enableDebugMessages: true,
       whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
     }),
   );
 

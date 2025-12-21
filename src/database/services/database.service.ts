@@ -42,8 +42,4 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
     await this.pool.end();
     this.logger.log('PostgreSQL disconnected');
   }
-
-  getPool(): Pool {
-    return this.pool;
-  }
 }
