@@ -19,7 +19,7 @@ export class PostService {
   async findPostById(id: number): Promise<Post> {
     const post = await this.postRepo.findById(id);
 
-    if (!post) throw new NotFoundException();
+    if (!post) throw new NotFoundException(`Post with id: ${id} not found`);
 
     return post;
   }
