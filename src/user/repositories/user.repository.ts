@@ -35,10 +35,37 @@ export class UserRepository {
   }
 
   async update(dto: UpdateUserDto, id: number): Promise<User | null> {
-    const result = await this.databaseService.query<User>(
-      'UPDATE users SET name = $2, email = $3 WHERE id = $1 RETURNING *',
-      [id, dto.name, dto.email],
-    );
+    // Array of fields that will be updated
+    const fields: string[] = [];
+
+    // Array of values to be updated
+    const values: any[] = [];
+
+    // SQL parameter number
+    let index = 1;
+
+    // If the name is received
+    if (dto.name !== undefined) {
+      fields.push(`name = $${index++}`);
+      values.push(dto.name);
+    }
+
+    // If the email is received
+    if (dto.email !== undefined) {
+      fields.push(`email = $${index++}`);
+      values.push(dto.email);
+    }
+
+    // If no fields are received
+    if (fields.length === 0) {
+      return this.findById(id);
+    }
+
+    const query = `UPDATE users SET ${fields.join(', ')} WHERE id = $${index} RETURNING * `;
+
+    values.push(id);
+
+    const result = await this.databaseService.query<User>(query, values);
 
     return result.rows[0] ?? null;
   }

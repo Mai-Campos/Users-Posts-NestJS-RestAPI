@@ -35,10 +35,29 @@ export class PostsRepository {
   }
 
   async update(dto: UpdatePostDto, id: number): Promise<Post | null> {
-    const result = await this.databaseService.query<Post>(
-      'UPDATE posts SET title = $1, content = $2 WHERE id = $3 RETURNING *',
-      [dto.title, dto.content, id],
-    );
+    const fields: string[] = [];
+    const values: any[] = [];
+    let index = 1;
+
+    if (dto.title !== undefined) {
+      fields.push(`title = $${index++}`);
+      values.push(dto.title);
+    }
+
+    if (dto.content !== undefined) {
+      fields.push(`content = $${index++}`);
+      values.push(dto.content);
+    }
+
+    if (fields.length === 0) {
+      return this.findById(id);
+    }
+
+    const query = `UPDATE posts SET ${fields.join(', ')} WHERE id = $${index} RETURNING * `;
+
+    values.push(id);
+
+    const result = await this.databaseService.query<Post>(query, values);
 
     return result.rows[0] ?? null;
   }

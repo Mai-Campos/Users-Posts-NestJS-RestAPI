@@ -7,8 +7,8 @@ import {
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
 } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { User } from '../model/user.model';
@@ -35,8 +35,8 @@ export class UserController {
     return await this.service.createUser(dto);
   }
 
-  @Put(':id')
-  async putUser(
+  @Patch(':id')
+  async patchUser(
     @Body() dto: UpdateUserDto,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<User> {
