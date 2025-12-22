@@ -5,7 +5,7 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-# nestjs-users-posts
+# Users-Posts-NestJS-RestAPI
 
 REST API developed with NestJS and PostgreSQL, using direct SQL without ORM, to handle Users and Posts with 1:N relationships.
 
