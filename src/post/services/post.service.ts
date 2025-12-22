@@ -4,6 +4,7 @@ import { UpdatePostDto } from '../dto/update-post.dto';
 import { PostsRepository } from '../repositories/post.repository';
 import { Post } from '../model/post.model';
 import { UserService } from 'src/user/services/user.service';
+import { PostWithAuthor } from '../model/post-with-author-name';
 
 @Injectable()
 export class PostService {
@@ -22,6 +23,12 @@ export class PostService {
     if (!post) throw new NotFoundException(`Post with id: ${id} not found`);
 
     return post;
+  }
+
+  async findPostsByUser(user_id: number): Promise<PostWithAuthor[]> {
+    await this.userService.findUserById(user_id);
+
+    return this.postRepo.findByUser(user_id);
   }
 
   async createPost(dto: CreatePostDto): Promise<Post> {

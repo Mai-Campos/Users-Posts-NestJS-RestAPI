@@ -3,6 +3,7 @@ import { DatabaseService } from 'src/database/services/database.service';
 import { Post } from '../model/post.model';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
+import { PostWithAuthor } from '../model/post-with-author-name';
 
 @Injectable()
 export class PostsRepository {
@@ -23,6 +24,15 @@ export class PostsRepository {
     );
 
     return result.rows[0] ?? null;
+  }
+
+  async findByUser(user_id: number): Promise<PostWithAuthor[]> {
+    const result = await this.databaseService.query<PostWithAuthor>(
+      'SELECT u.name as author, p.title, p.content, p.id FROM posts p INNER JOIN users u ON u.id = p.user_id WHERE p.user_id = $1 ',
+      [user_id],
+    );
+
+    return result.rows;
   }
 
   async create(dto: CreatePostDto): Promise<Post> {

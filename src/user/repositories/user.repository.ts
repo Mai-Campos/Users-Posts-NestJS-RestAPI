@@ -3,6 +3,8 @@ import { DatabaseService } from 'src/database/services/database.service';
 import { User } from '../model/user.model';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { UserWithPosts } from '../model/user-with-posts';
+import { UserWithPostsRow } from './utils/user-with-posts-row';
 
 @Injectable()
 export class UserRepository {
@@ -23,6 +25,34 @@ export class UserRepository {
     );
 
     return result.rows[0] ?? null;
+  }
+
+  async findUserWithPosts(id: number): Promise<UserWithPosts | null> {
+    const result = await this.databaseService.query<UserWithPostsRow>(
+      'SELECT u.id as author_id, u.name as author_name, u.email as author_email, p.title as post_title, p.content as post_content, p.id as post_id FROM users u LEFT JOIN posts p ON p.user_id = u.id WHERE u.id = $1',
+      [id],
+    );
+
+    if (result.rows.length === 0) return null;
+
+    const user: UserWithPosts = {
+      id: result.rows[0].author_id,
+      name: result.rows[0].author_name,
+      email: result.rows[0].author_email,
+      posts: [],
+    };
+
+    for (const row of result.rows) {
+      if (row.post_id) {
+        user.posts.push({
+          id: row.post_id,
+          title: row.post_title!,
+          content: row.post_content ?? undefined,
+        });
+      }
+    }
+
+    return user;
   }
 
   async create(dto: CreateUserDTO): Promise<User> {

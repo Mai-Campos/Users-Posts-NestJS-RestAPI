@@ -9,6 +9,7 @@ import { UserRepository } from '../repositories/user.repository';
 import { User } from '../model/user.model';
 import { UpdateUserDto } from '../dtos/update-user.dto';
 import { CreateUserDTO } from '../dtos/create-user.dto';
+import { UserWithPosts } from '../model/user-with-posts';
 
 @Injectable()
 export class UserService {
@@ -26,6 +27,14 @@ export class UserService {
     if (!user) throw new NotFoundException(`User with id: ${id} non exist`);
 
     return user;
+  }
+
+  async findUserWithPosts(id: number): Promise<UserWithPosts | null> {
+    const user = await this.userRepo.findById(id);
+
+    if (!user) throw new NotFoundException(`User with id: ${id} not found`);
+
+    return await this.userRepo.findUserWithPosts(id);
   }
 
   async createUser(dto: CreateUserDTO): Promise<User> {

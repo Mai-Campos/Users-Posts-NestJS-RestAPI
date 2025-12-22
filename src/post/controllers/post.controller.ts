@@ -14,6 +14,7 @@ import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { Post } from '../model/post.model';
+import { PostWithAuthor } from '../model/post-with-author-name';
 
 @Controller('posts')
 export class PostController {
@@ -27,6 +28,13 @@ export class PostController {
   @Get(':id')
   getPostById(@Param('id', ParseIntPipe) id: number): Promise<Post> {
     return this.postService.findPostById(id);
+  }
+
+  @Get('/user/:user_id')
+  getPostsByUser(
+    @Param('user_id', ParseIntPipe) user_id: number,
+  ): Promise<PostWithAuthor[]> {
+    return this.postService.findPostsByUser(user_id);
   }
 
   @HttpPost()

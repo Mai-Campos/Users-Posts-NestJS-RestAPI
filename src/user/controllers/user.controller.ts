@@ -14,6 +14,7 @@ import { UserService } from '../services/user.service';
 import { User } from '../model/user.model';
 import { CreateUserDTO } from '../dtos/create-user.dto';
 import { UpdateUserDto } from '../dtos/update-user.dto';
+import { UserWithPosts } from '../model/user-with-posts';
 
 @Controller('users')
 export class UserController {
@@ -27,6 +28,13 @@ export class UserController {
   @Get(':id')
   async getUserById(@Param('id', ParseIntPipe) id: number): Promise<User> {
     return await this.service.findUserById(id);
+  }
+
+  @Get('/posts/:id')
+  async getUserWithPosts(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<UserWithPosts | null> {
+    return await this.service.findUserWithPosts(id);
   }
 
   @Post()
