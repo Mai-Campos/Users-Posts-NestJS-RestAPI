@@ -9,20 +9,25 @@ import {
   HttpCode,
   HttpStatus,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { PostService } from '../services/post.service';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { Post } from '../model/post.model';
 import { PostWithAuthor } from '../model/post-with-author-name';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { PaginatedResponse } from 'src/common/models/pagination.models';
 
 @Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getAllPosts(): Promise<Post[]> {
-    return this.postService.findAllPosts();
+  getAllPosts(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<PaginatedResponse<Post>> {
+    return this.postService.findAllPosts(paginationDto);
   }
 
   @Get(':id')

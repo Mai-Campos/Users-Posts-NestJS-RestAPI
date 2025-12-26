@@ -5,6 +5,8 @@ import { PostsRepository } from '../repositories/post.repository';
 import { Post } from '../model/post.model';
 import { UserService } from 'src/user/services/user.service';
 import { PostWithAuthor } from '../model/post-with-author-name';
+import { PaginationDto } from 'src/common/dtos/pagination.dto';
+import { PaginatedResponse } from 'src/common/models/pagination.models';
 
 @Injectable()
 export class PostService {
@@ -13,8 +15,20 @@ export class PostService {
     private userService: UserService,
   ) {}
 
-  findAllPosts(): Promise<Post[]> {
-    return this.postRepo.findAll();
+  async findAllPosts(
+    paginationDto: PaginationDto,
+  ): Promise<PaginatedResponse<Post>> {
+    const page = paginationDto.page ?? 1;
+    const limit = paginationDto.limit ?? 5;
+    const skip = (paginationDto.page - 1) * paginationDto.limit;
+
+    const posts = await this.postRepo.findAll(skip, limit);
+
+    return {
+      data: posts,
+      page,
+      limit,
+    };
   }
 
   async findPostById(id: number): Promise<Post> {

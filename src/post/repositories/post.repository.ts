@@ -9,9 +9,10 @@ import { PostWithAuthor } from '../model/post-with-author-name';
 export class PostsRepository {
   constructor(private databaseService: DatabaseService) {}
 
-  async findAll(): Promise<Post[]> {
+  async findAll(skip: number, limit: number): Promise<Post[]> {
     const result = await this.databaseService.query<Post>(
-      'SELECT * from posts',
+      'SELECT * from posts ORDER BY id LIMIT $1 OFFSET $2',
+      [limit, skip],
     );
 
     return result.rows;
