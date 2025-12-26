@@ -18,8 +18,8 @@ export class PostService {
   async findAllPosts(
     paginationDto: PaginationDto,
   ): Promise<PaginatedResponse<Post>> {
-    const page = paginationDto.page ?? 1;
-    const limit = paginationDto.limit ?? 5;
+    const page = paginationDto.page;
+    const limit = paginationDto.limit;
     const skip = (paginationDto.page - 1) * paginationDto.limit;
 
     const posts = await this.postRepo.findAll(skip, limit);
